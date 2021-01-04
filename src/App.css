@@ -36,3 +36,22 @@
     transform: rotate(360deg);
   }
 }
+.numberCircle {
+  width: 30px;
+  line-height: 30px;
+  border-radius: 50%;
+  text-align: center;
+  font-size: 25px;
+  color: rgb(184, 54, 54);
+  border: 1px solid;
+}
+
+.myTableWidth {
+  width: 3%;
+  vertical-align: middle;
+}
+
+.doneTextWidth {
+  width: 10%;
+  text-align: right;
+}

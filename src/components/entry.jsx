@@ -1,10 +1,11 @@
 import Dropdown from "react-bootstrap/Dropdown";
 import "bootstrap/dist/css/bootstrap.min.css";
+import { FaPlusSquare } from "react-icons/fa";
 
 const Entry = (props) => {
   const levels = [1, 2, 3];
   return (
-    <div className="container">
+    <div className="container mt-5">
       <div className="input-group">
         <input
           type="text"
@@ -13,10 +14,11 @@ const Entry = (props) => {
           aria-label="Task"
           aria-describedby="basic-addon1"
           onChange={props.setText}
+          value={props.toDo}
         />
         <Dropdown>
           <Dropdown.Toggle variant="success" id="dropdown-basic">
-            Importance
+            <FaPlusSquare size={20} />
           </Dropdown.Toggle>
 
           <Dropdown.Menu>
