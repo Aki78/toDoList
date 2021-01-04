@@ -5,11 +5,19 @@ import Button from "react-bootstrap/Button";
 import Container from "react-bootstrap/Container";
 import "bootstrap/dist/css/bootstrap.min.css";
 import { Table } from "react-bootstrap";
+import {
+  SwipeableList,
+  SwipeableListItem,
+} from "@sandstreamdev/react-swipeable-list";
+import "@sandstreamdev/react-swipeable-list/dist/styles.css";
+import { FaCheckSquare } from "react-icons/fa";
+
 class App extends Component {
   state = {
     toDo: "",
     toDoListText: [],
     toDoListNum: [],
+    mouseDown: false,
   };
   setText = (e) => {
     this.setState({ toDo: e.target.value });
@@ -27,9 +35,19 @@ class App extends Component {
     this.setState({ toDo: "" });
   };
   delList = (delIndex) => {
+    //    if (myProgress > 80 && !this.state.mouseDown) {
     let a = [...this.state.toDoListText];
     a.splice(delIndex, 1);
     this.setState({ toDoListText: a });
+    //    }
+  };
+  isMouseDown = () => {
+    this.setState({ mouseDown: true });
+    console.log(this.state.mouseDown);
+  };
+  isMouseUp = () => {
+    this.setState({ mouseDown: false });
+    console.log(this.state.mouseDown);
   };
   render() {
     return (
@@ -44,34 +62,45 @@ class App extends Component {
           <Table striped size="sm">
             <tbody className="center">
               <tr>
-                <th className="myTableWidth align-middle">level</th>
-                <th style={{ fontSize: "25px" }} className="align-middle">
-                  to do
-                </th>
-                <th className="doneTextWidth"></th>
+                <th className="myTableWidth align-middle"></th>
+                <th style={{ fontSize: "25px" }} className="align-middle"></th>
               </tr>
               {this.state.toDoListText.map((elem, index) => (
                 <tr key={index}>
-                  <td className="myTableWidth">
-                    <div className="numberCircle">
+                  <td className="myTableWidth align-middle">
+                    <div className="numberCircle align-middle">
                       {this.state.toDoListNum[index]}
                     </div>
                   </td>
-                  <td>
-                    <Button
-                      // for="fancy-checkbox-default"
-                      className=" btn btn-default active "
-                    >
-                      <span style={{ fontSize: "20px" }}> {elem} </span>
-                    </Button>
-                  </td>
                   <td className="doneTextWidth">
-                    <Button
-                      className="btn btn-danger"
-                      onClick={() => this.delList(index)}
+                    <SwipeableListItem
+                      swipeRight={{
+                        content: (
+                          <div>
+                            <Button
+                              onMouseDown={this.isMouseDown}
+                              onMouseUp={this.isMouseUp}
+                              className="btn "
+                            >
+                              <FaCheckSquare />
+                            </Button>
+                          </div>
+                        ),
+                        action: () => this.delList(index),
+                      }}
+                      onSwipeProgress={(progress) =>
+                        console.info(`Swipe progress: ${progress}%`)
+                      }
                     >
-                      Done
-                    </Button>
+                      <Button
+                        onMouseDown={this.isMouseDown}
+                        onMouseUp={this.isMouseUp}
+                        className="btn"
+                        variant="outline-dark"
+                      >
+                        <span style={{ fontSize: "30px" }}>{elem}</span>
+                      </Button>
+                    </SwipeableListItem>
                   </td>
                 </tr>
               ))}
