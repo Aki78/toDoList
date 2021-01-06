@@ -6,13 +6,13 @@ import Button from "react-bootstrap/Button";
 const Entry2 = (props) => {
   const levels = [1, 2, 3];
   return (
-    <div className="container mt-5">
+    <div className="container mt-5 mb-2">
       <div className="input-group">
         <input
           type="text"
           className="form-control"
-          placeholder="Task"
-          aria-label="Task"
+          placeholder="Type"
+          aria-label="Type"
           aria-describedby="basic-addon1"
           onChange={props.setText}
           value={props.toDo}

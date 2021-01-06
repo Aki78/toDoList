@@ -5,7 +5,7 @@ import { FaPlusSquare } from "react-icons/fa";
 const Entry = (props) => {
   const levels = [1, 2, 3];
   return (
-    <div className="container mt-5">
+    <div className="container mt-1 mb-5">
       <div className="input-group">
         <input
           type="text"

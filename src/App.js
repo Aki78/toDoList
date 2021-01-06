@@ -20,9 +20,9 @@ class App extends Component {
     toDo2: "",
     toDoListText: [],
     toDoListType: [],
+    toDoListNum: [],
     currentGlobal: "Primary",
     toDoListGlobal: ["Primary"],
-    toDoListNum: [],
     sortedState: 0,
   };
   setText = (e) => {
@@ -32,6 +32,8 @@ class App extends Component {
     this.setState({ toDo2: e.target.value });
   };
   setLevel = (e) => {
+    if (!this.state.toDo || /^\s*$/.test(this.state.toDo)) return;
+
     var joined = [...this.state.toDoListText];
     joined.push(this.state.toDo);
     this.setState({ toDoListText: joined });
@@ -45,8 +47,10 @@ class App extends Component {
     this.setState({ toDoListType: joined });
 
     this.setState({ toDo: "" });
+    localStorage.setItem("myState", JSON.stringify(this.state));
   };
   setGlobal = (e) => {
+    if (!this.state.toDo2 || /^\s*$/.test(this.state.toDo2)) return;
     var joined = [...this.state.toDoListGlobal];
 
     joined.push(this.state.toDo2);
@@ -80,7 +84,6 @@ class App extends Component {
         this.state.toDoListType
       );
 
-      console.log(newMyList);
       newMyList.sort();
       let MyNewList2 = _.unzip(newMyList);
       this.setState({ toDoListText: MyNewList2[1] });
@@ -109,6 +112,21 @@ class App extends Component {
       return "▼";
     }
   }
+  getState = () => {
+    let a = "a";
+    a = JSON.parse(localStorage.getItem("myState"));
+    this.setState({ toDoListText: a.toDoListText });
+    this.setState({ toDoListNum: a.toDoListNum });
+    this.setState({ toDoListType: a.toDoListType });
+    this.setState({ toDoListGlobal: a.toDoListGlobal });
+  };
+  saveState = () => {
+    localStorage.setItem("myState", JSON.stringify(this.state));
+  };
+  componentDidMount = () => {
+    this.getState();
+  };
+
   render() {
     return (
       <div className="App">
@@ -139,7 +157,7 @@ class App extends Component {
             </Button>
           );
         })}
-        <Container className="mt-5">
+        <Container className="mt-2">
           <ListGroup size="sm">
             <ListGroupItem>
               <div
@@ -157,7 +175,7 @@ class App extends Component {
                   <ListGroupItem
                     key={index}
                     variant={
-                      this.state.toDoListNum[index] === 1 ? "primary" : "danger"
+                      this.state.toDoListNum[index] === 1 ? "dark" : "danger"
                     }
                   >
                     <SwipeableListItem
@@ -180,6 +198,9 @@ class App extends Component {
             })}
           </ListGroup>
         </Container>
+        <Button className="btn btn-danger" onClick={() => this.saveState()}>
+          save
+        </Button>
       </div>
     );
   }
