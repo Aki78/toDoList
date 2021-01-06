@@ -44,6 +44,11 @@
   font-size: 25px;
   color: rgb(46, 76, 207);
   border: 1px solid;
+  margin: 10px;
+
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .myTableWidth {
@@ -54,4 +59,9 @@
 .doneTextWidth {
   width: 10%;
   text-align: right;
+}
+.swipeable-list-item {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }

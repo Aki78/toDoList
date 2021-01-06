@@ -1,10 +1,11 @@
 import React, { Component } from "react";
 import "./App.css";
 import Entry from "./components/entry";
+import Entry2 from "./components/entry2";
 import Button from "react-bootstrap/Button";
 import Container from "react-bootstrap/Container";
 import "bootstrap/dist/css/bootstrap.min.css";
-import { Table } from "react-bootstrap";
+import { ListGroup, ListGroupItem } from "react-bootstrap";
 import _ from "lodash";
 import {
   SwipeableList,
@@ -16,13 +17,19 @@ import { FaCheckSquare } from "react-icons/fa";
 class App extends Component {
   state = {
     toDo: "",
+    toDo2: "",
     toDoListText: [],
+    toDoListType: [],
+    currentGlobal: "Primary",
+    toDoListGlobal: ["Primary"],
     toDoListNum: [],
-    mouseDown: false,
     sortedState: 0,
   };
   setText = (e) => {
     this.setState({ toDo: e.target.value });
+  };
+  setText2 = (e) => {
+    this.setState({ toDo2: e.target.value });
   };
   setLevel = (e) => {
     var joined = [...this.state.toDoListText];
@@ -33,40 +40,64 @@ class App extends Component {
     joinedNum.push(e);
     this.setState({ toDoListNum: joinedNum });
 
+    var joined = [...this.state.toDoListType];
+    joined.push(this.state.currentGlobal);
+    this.setState({ toDoListType: joined });
+
     this.setState({ toDo: "" });
   };
+  setGlobal = (e) => {
+    var joined = [...this.state.toDoListGlobal];
+
+    joined.push(this.state.toDo2);
+    this.setState({ toDoListGlobal: joined });
+
+    this.setState({ currentGlobal: this.state.toDo2 });
+    this.setState({ toDo2: "" });
+  };
   delList = (delIndex) => {
-    //    if (myProgress > 80 && !this.state.mouseDown) {
     let a = [...this.state.toDoListText];
     let b = [...this.state.toDoListNum];
+    let c = [...this.state.toDoListType];
     a.splice(delIndex, 1);
     b.splice(delIndex, 1);
+    c.splice(delIndex, 1);
     this.setState({ toDoListText: a });
     this.setState({ toDoListNum: b });
-    //    }
+    this.setState({ toDoListType: c });
   };
-  isMouseDown = () => {
-    this.setState({ mouseDown: true });
-  };
-  isMouseUp = () => {
-    this.setState({ mouseDown: false });
+  delType = (delIndex) => {
+    let a = [...this.state.toDoListGlobal];
+    a.splice(delIndex, 1);
+    this.setState({ toDoListGlobal: a });
   };
   sortMe = () => {
     if (this.state.toDoListNum.length === 0) return;
     if (this.state.sortedState === 0 || this.state.sortedState === 2) {
-      let newMyList = _.zip(this.state.toDoListNum, this.state.toDoListText);
+      let newMyList = _.zip(
+        this.state.toDoListNum,
+        this.state.toDoListText,
+        this.state.toDoListType
+      );
 
+      console.log(newMyList);
       newMyList.sort();
       let MyNewList2 = _.unzip(newMyList);
       this.setState({ toDoListText: MyNewList2[1] });
+      this.setState({ toDoListType: MyNewList2[2] });
       this.setState({ toDoListNum: MyNewList2[0] });
       this.setState({ sortedState: 1 });
     } else if (this.state.sortedState === 1) {
-      let newMyList = _.zip(this.state.toDoListNum, this.state.toDoListText);
+      let newMyList = _.zip(
+        this.state.toDoListNum,
+        this.state.toDoListText,
+        this.state.toDoListType
+      );
 
       newMyList.reverse();
       let MyNewList2 = _.unzip(newMyList);
       this.setState({ toDoListText: MyNewList2[1] });
+      this.setState({ toDoListType: MyNewList2[2] });
       this.setState({ toDoListNum: MyNewList2[0] });
       this.setState({ sortedState: 2 });
     }
@@ -81,65 +112,73 @@ class App extends Component {
   render() {
     return (
       <div className="App">
+        <Entry2
+          setText={this.setText2}
+          setLevel={this.setGlobal}
+          toDo={this.state.toDo2}
+        />
         <Entry
           setText={this.setText}
           setLevel={this.setLevel}
           toDo={this.state.toDo}
         />
+        {this.state.toDoListGlobal.map((elem, index) => {
+          return (
+            <Button
+              key={index}
+              variant={
+                elem === this.state.currentGlobal
+                  ? "primary"
+                  : "outline-primary"
+              }
+              onDoubleClick={() => this.delType(index)}
+              onClick={() => this.setState({ currentGlobal: elem })}
+              style={{ margin: "3px" }}
+            >
+              {elem}
+            </Button>
+          );
+        })}
         <Container className="mt-5">
-          <Table striped size="sm">
-            <tbody className="center">
-              <tr>
-                <th
-                  style={{ cursor: "pointer" }}
-                  onClick={this.sortMe}
-                  className="myTableWidth align-middle"
-                >
-                  level{this.sortedDecend()}
-                </th>
-                <th style={{ fontSize: "25px" }} className="align-middle"></th>
-              </tr>
-              {this.state.toDoListText.map((elem, index) => (
-                <tr key={index}>
-                  <td className="myTableWidth align-middle">
-                    <div className="numberCircle align-middle">
-                      {this.state.toDoListNum[index]}
-                    </div>
-                  </td>
-                  <td className="doneTextWidth">
+          <ListGroup size="sm">
+            <ListGroupItem>
+              <div
+                style={{ cursor: "pointer" }}
+                onClick={this.sortMe}
+                className="myTableWidth align-middle"
+              >
+                level{this.sortedDecend()}
+              </div>
+            </ListGroupItem>
+            {this.state.toDoListText.map((elem, index) => {
+              //              console.log(this.state.toDoListGlobal);
+              if (this.state.toDoListType[index] === this.state.currentGlobal) {
+                return (
+                  <ListGroupItem
+                    key={index}
+                    variant={
+                      this.state.toDoListNum[index] === 1 ? "primary" : "danger"
+                    }
+                  >
                     <SwipeableListItem
                       swipeRight={{
                         content: (
                           <div>
-                            <Button
-                              onMouseDown={this.isMouseDown}
-                              onMouseUp={this.isMouseUp}
-                              className="btn "
-                            >
+                            <Button className="btn ">
                               <FaCheckSquare />
                             </Button>
                           </div>
                         ),
                         action: () => this.delList(index),
                       }}
-                      onSwipeProgress={(progress) =>
-                        console.info(`Swipe progress: ${progress}%`)
-                      }
                     >
-                      <Button
-                        onMouseDown={this.isMouseDown}
-                        onMouseUp={this.isMouseUp}
-                        className="btn"
-                        variant="outline-dark"
-                      >
-                        <span style={{ fontSize: "20px" }}>{elem}</span>
-                      </Button>
+                      <span style={{ fontSize: "20px" }}>{elem}</span>
                     </SwipeableListItem>
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </Table>
+                  </ListGroupItem>
+                );
+              }
+            })}
+          </ListGroup>
         </Container>
       </div>
     );
