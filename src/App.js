@@ -2,18 +2,12 @@ import React, { Component } from "react";
 import "./App.css";
 import Entry from "./components/entry";
 import Entry2 from "./components/entry2";
+import ToDo from "./components/toDo";
 import Button from "react-bootstrap/Button";
-import Container from "react-bootstrap/Container";
 import "bootstrap/dist/css/bootstrap.min.css";
-import { ListGroup, ListGroupItem } from "react-bootstrap";
 import _ from "lodash";
-import {
-  SwipeableList,
-  SwipeableListItem,
-} from "@sandstreamdev/react-swipeable-list";
 import "@sandstreamdev/react-swipeable-list/dist/styles.css";
-import { FaCheckSquare } from "react-icons/fa";
-
+import GlobalList from "./components/globalList";
 class App extends Component {
   state = {
     toDo: "",
@@ -26,10 +20,14 @@ class App extends Component {
     sortedState: 0,
   };
   setText = (e) => {
-    this.setState({ toDo: e.target.value });
+    this.setState({
+      toDo: e.target.value,
+    });
   };
   setText2 = (e) => {
-    this.setState({ toDo2: e.target.value });
+    this.setState({
+      toDo2: e.target.value,
+    });
   };
   setLevel = (e) => {
     if (!this.state.toDo || /^\s*$/.test(this.state.toDo)) return;
@@ -105,27 +103,30 @@ class App extends Component {
       this.setState({ sortedState: 2 });
     }
   };
-  sortedDecend() {
-    if (this.state.sortedState === 0 || this.state.sortedState === 2) {
+  setCurrent = (e) => {
+    this.setState({ currentGlobal: e });
+  };
+  sortedDecend = (a) => {
+    if (a === 0 || a === 2) {
       return "▲";
-    } else if (this.state.sortedState === 1) {
+    } else if (a === 1) {
       return "▼";
     }
-  }
-  getState = () => {
-    let a = "a";
-    a = JSON.parse(localStorage.getItem("myState"));
-    this.setState({ toDoListText: a.toDoListText });
-    this.setState({ toDoListNum: a.toDoListNum });
-    this.setState({ toDoListType: a.toDoListType });
-    this.setState({ toDoListGlobal: a.toDoListGlobal });
   };
+  //  getState = () => {
+  //    let a = "a";
+  //    a = JSON.parse(localStorage.getItem("myState"));
+  //    this.setState({ toDoListText: a.toDoListText });
+  //    this.setState({ toDoListNum: a.toDoListNum });
+  //    this.setState({ toDoListType: a.toDoListType });
+  //    this.setState({ toDoListGlobal: a.toDoListGlobal });
+  //  };
   saveState = () => {
     localStorage.setItem("myState", JSON.stringify(this.state));
   };
-  componentDidMount = () => {
-    this.getState();
-  };
+  //  componentDidMount = () => {
+  //    this.getState();
+  //  };
 
   render() {
     return (
@@ -140,64 +141,23 @@ class App extends Component {
           setLevel={this.setLevel}
           toDo={this.state.toDo}
         />
-        {this.state.toDoListGlobal.map((elem, index) => {
-          return (
-            <Button
-              key={index}
-              variant={
-                elem === this.state.currentGlobal
-                  ? "primary"
-                  : "outline-primary"
-              }
-              onDoubleClick={() => this.delType(index)}
-              onClick={() => this.setState({ currentGlobal: elem })}
-              style={{ margin: "3px" }}
-            >
-              {elem}
-            </Button>
-          );
-        })}
-        <Container className="mt-2">
-          <ListGroup size="sm">
-            <ListGroupItem>
-              <div
-                style={{ cursor: "pointer" }}
-                onClick={this.sortMe}
-                className="myTableWidth align-middle"
-              >
-                level{this.sortedDecend()}
-              </div>
-            </ListGroupItem>
-            {this.state.toDoListText.map((elem, index) => {
-              //              console.log(this.state.toDoListGlobal);
-              if (this.state.toDoListType[index] === this.state.currentGlobal) {
-                return (
-                  <ListGroupItem
-                    key={index}
-                    variant={
-                      this.state.toDoListNum[index] === 1 ? "dark" : "danger"
-                    }
-                  >
-                    <SwipeableListItem
-                      swipeRight={{
-                        content: (
-                          <div>
-                            <Button className="btn ">
-                              <FaCheckSquare />
-                            </Button>
-                          </div>
-                        ),
-                        action: () => this.delList(index),
-                      }}
-                    >
-                      <span style={{ fontSize: "20px" }}>{elem}</span>
-                    </SwipeableListItem>
-                  </ListGroupItem>
-                );
-              }
-            })}
-          </ListGroup>
-        </Container>
+        <GlobalList
+          toDoListGlobal={this.state.toDoListGlobal}
+          currentGlobal={this.state.currentGlobal}
+          setCurrent={this.setCurrent}
+          delType={this.delType}
+        />
+        <ToDo
+          sortMe={this.sortMe}
+          sortedDecend={this.sortedDecend}
+          sortedState={this.state.sortedState}
+          toDoListType={this.state.toDoListType}
+          currentGlobal={this.state.currentGlobal}
+          toDoListNum={this.state.toDoListNum}
+          toDoListText={this.state.toDoListText}
+          delList={this.delList}
+        />
+        ;
         <Button className="btn btn-danger" onClick={() => this.saveState()}>
           save
         </Button>

@@ -3,7 +3,7 @@ import "bootstrap/dist/css/bootstrap.min.css";
 import { FaPlusSquare } from "react-icons/fa";
 
 const Entry = (props) => {
-  const levels = [1, 2, 3];
+  const levels = [1, 2];
   return (
     <div className="container mt-1 mb-5">
       <div className="input-group">
