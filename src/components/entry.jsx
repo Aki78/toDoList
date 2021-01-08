@@ -5,8 +5,8 @@ import { FaPlusSquare } from "react-icons/fa";
 const Entry = (props) => {
   const levels = [1, 2];
   return (
-    <div className="container mt-1 mb-5">
-      <div className="input-group">
+    <div style={{ margin: "5px" }}>
+      <div style={{ alignItems: "center" }} className="input-group">
         <input
           type="text"
           className="form-control"
@@ -15,20 +15,30 @@ const Entry = (props) => {
           aria-describedby="basic-addon1"
           onChange={props.setText}
           value={props.toDo}
+          style={{ fontSize: "30px" }}
         />
-        <Dropdown>
-          <Dropdown.Toggle variant="success" id="dropdown-basic">
-            <FaPlusSquare size={20} />
-          </Dropdown.Toggle>
+        <div style={{ alignItems: "center" }}>
+          <Dropdown>
+            <Dropdown.Toggle
+              style={{ height: "60px", width: "60px" }}
+              variant="success"
+              id="dropdown-basic"
+            >
+              <FaPlusSquare size={25} />
+            </Dropdown.Toggle>
 
-          <Dropdown.Menu>
-            {levels.map((myNum) => (
-              <Dropdown.Item key={myNum} onClick={() => props.setLevel(myNum)}>
-                Level {myNum}
-              </Dropdown.Item>
-            ))}
-          </Dropdown.Menu>
-        </Dropdown>
+            <Dropdown.Menu>
+              {levels.map((myNum) => (
+                <Dropdown.Item
+                  key={myNum}
+                  onClick={() => props.setLevel(myNum)}
+                >
+                  Level {myNum}
+                </Dropdown.Item>
+              ))}
+            </Dropdown.Menu>
+          </Dropdown>
+        </div>
       </div>
     </div>
   );

@@ -8,6 +8,7 @@ import "bootstrap/dist/css/bootstrap.min.css";
 import _ from "lodash";
 import "@sandstreamdev/react-swipeable-list/dist/styles.css";
 import GlobalList from "./components/globalList";
+import { fadeIn, fadeOut } from "react-animations";
 class App extends Component {
   state = {
     toDo: "",
@@ -18,6 +19,7 @@ class App extends Component {
     currentGlobal: "Primary",
     toDoListGlobal: ["Primary"],
     sortedState: 0,
+    animationMode: fadeIn,
   };
   setText = (e) => {
     this.setState({
@@ -127,40 +129,58 @@ class App extends Component {
   //  componentDidMount = () => {
   //    this.getState();
   //  };
-
+  setAnimationMode = (e) => {
+    this.setState({ animationMode: e });
+  };
   render() {
     return (
       <div className="App">
-        <Entry2
-          setText={this.setText2}
-          setLevel={this.setGlobal}
-          toDo={this.state.toDo2}
-        />
-        <Entry
-          setText={this.setText}
-          setLevel={this.setLevel}
-          toDo={this.state.toDo}
-        />
-        <GlobalList
-          toDoListGlobal={this.state.toDoListGlobal}
-          currentGlobal={this.state.currentGlobal}
-          setCurrent={this.setCurrent}
-          delType={this.delType}
-        />
-        <ToDo
-          sortMe={this.sortMe}
-          sortedDecend={this.sortedDecend}
-          sortedState={this.state.sortedState}
-          toDoListType={this.state.toDoListType}
-          currentGlobal={this.state.currentGlobal}
-          toDoListNum={this.state.toDoListNum}
-          toDoListText={this.state.toDoListText}
-          delList={this.delList}
-        />
-        ;
-        <Button className="btn btn-danger" onClick={() => this.saveState()}>
-          save
-        </Button>
+        <div
+          style={{
+            float: "left",
+            width: "20%",
+            marginRight: "10%",
+          }}
+        >
+          <Entry2
+            setText={this.setText2}
+            setLevel={this.setGlobal}
+            toDo={this.state.toDo2}
+            setAnimationMode={this.setAnimationMode}
+            animationMode={this.state.animationMode}
+          />
+          <Entry
+            setText={this.setText}
+            setLevel={this.setLevel}
+            toDo={this.state.toDo}
+          />
+          <GlobalList
+            toDoListGlobal={this.state.toDoListGlobal}
+            currentGlobal={this.state.currentGlobal}
+            setCurrent={this.setCurrent}
+            delType={this.delType}
+            animationMode={this.state.animationMode}
+            setAnimationMode={this.setAnimationMode}
+            style={{ transition: "all 0.5s ease-out" }}
+          />
+        </div>
+        <div style={{ float: "left", width: "60%" }}>
+          <ToDo
+            sortMe={this.sortMe}
+            sortedDecend={this.sortedDecend}
+            sortedState={this.state.sortedState}
+            toDoListType={this.state.toDoListType}
+            currentGlobal={this.state.currentGlobal}
+            toDoListNum={this.state.toDoListNum}
+            toDoListText={this.state.toDoListText}
+            delList={this.delList}
+          />
+        </div>
+        <div style={{ clear: "both" }}>
+          <Button className="btn btn-danger" onClick={() => this.saveState()}>
+            save
+          </Button>
+        </div>
       </div>
     );
   }

@@ -14,7 +14,7 @@ import { FaCheckSquare } from "react-icons/fa";
 const ToDo = (props) => {
   console.log(props.currentGlobal);
   return (
-    <Container className="mt-2">
+    <div className="mt-2">
       <ListGroup size="sm">
         <ListGroupItem>
           <div
@@ -53,7 +53,7 @@ const ToDo = (props) => {
           }
         })}
       </ListGroup>
-    </Container>
+    </div>
   );
 };
 
