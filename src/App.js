@@ -161,7 +161,6 @@ class App extends Component {
             delType={this.delType}
             animationMode={this.state.animationMode}
             setAnimationMode={this.setAnimationMode}
-            style={{ transition: "all 0.5s ease-out" }}
           />
         </div>
         <div style={{ float: "left", width: "60%" }}>

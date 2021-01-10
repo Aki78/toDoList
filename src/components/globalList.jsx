@@ -1,57 +1,50 @@
 import React, { Component } from "react";
+import { useState } from "react";
 import Container from "react-bootstrap/Container";
 import Button from "react-bootstrap/Button";
 import "bootstrap/dist/css/bootstrap.min.css";
 import _ from "lodash";
 import "@sandstreamdev/react-swipeable-list/dist/styles.css";
-import { bounce } from "react-animations";
-import { fadeIn, fadeOut } from "react-animations";
-import Radium, { StyleRoot } from "radium";
+import { useSpring, animated } from "react-spring";
 
 const levels = [1, 2];
 
-class GlobalList extends Component {
-  setStyle = (e) => {
-    if (e === this.props.currentGlobal) {
-      return {
-        animation: "1s",
-        animationName: Radium.keyframes(this.props.animationMode),
-      };
-    } else {
-      return;
-    }
-  };
-  render() {
-    this.setStyle.bind(this);
-    return this.props.toDoListGlobal.map((elem, index) => (
-      <Container key={index}>
-        <StyleRoot>
-          <div style={this.setStyle(elem)}>
-            <Button
-              variant={
-                elem === this.props.currentGlobal
-                  ? "primary"
-                  : "outline-primary"
-              }
-              onDoubleClick={() => {
-                this.props.setAnimationMode(fadeOut);
-                setTimeout(() => this.props.delType(index), 700);
-              }}
-              onClick={() => this.props.setCurrent(elem)}
-            >
-              {elem}
-            </Button>
-          </div>
-        </StyleRoot>
-      </Container>
-    ));
-  }
-}
+const GlobalList = (props) => {
+  const [pressed, setPressed] = useState(false);
+  const { scale } = useSpring({
+    scale: pressed ? 0.8 : 1,
+  });
+
+  return props.toDoListGlobal.map((elem, index) => (
+    <Container key={index}>
+      <animated.div
+        style={
+          props.currentGlobal === elem
+            ? { transform: scale.interpolate((s) => `scale(${s})`) }
+            : {}
+        }
+      >
+        <Button
+          variant={elem === props.currentGlobal ? "primary" : "outline-primary"}
+          onDoubleClick={() => props.delType(index)}
+          //          onClick={() => }
+          onMouseDown={() => {
+            setPressed(true);
+            props.setCurrent(elem);
+          }}
+          onMouseUp={() => setPressed(false)}
+        >
+          {elem}
+        </Button>
+      </animated.div>
+    </Container>
+  ));
+};
 
 export default GlobalList;
 
-//          style={
-//            this.state.isAnimate
+//          style ={
+//            state.isAnimate
 //              ? {
 //                  animation: "x 1s",
 //                  animationName: Radium.keyframes(bounce, "bounce"),
@@ -60,15 +53,13 @@ export default GlobalList;
 //                }
 //              : {}
 //          }
-//    this.handleBounce.bind(this);
-//    this.handleEnd.bind(this);
 
 //  state = {
 //    isAnimate: false,
 //  };
 //  handleBounce = () => {
-//    this.setState({ isAnimate: true });
+//    setState({ isAnimate: true });
 //  };
 //  handleEnd = () => {
-//    this.setState({ isAnimate: false });
+//    setState({ isAnimate: false });
 //  };
